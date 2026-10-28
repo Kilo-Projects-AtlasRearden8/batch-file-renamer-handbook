@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Batch Rename Safety Worksheet — Asdale Dynamics, LLC</title>
+<meta name="description" content="Printable worksheet for safe batch file renaming. Published by Asdale Dynamics, LLC.">
+<link rel="stylesheet" href="style.css">
+<style>
+  .worksheet { max-width: 760px; margin: 0 auto; padding: 0 18px; }
+  .worksheet h1 { text-align: center; font-size: 1.6rem; margin-bottom: 4px; }
+  .worksheet .subhead { text-align: center; color: var(--muted); margin-bottom: 24px; }
+  .box { border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 16px; background: #fff; }
+  .box h3 { margin-top: 0; font-size: 1.05rem; }
+  table.rules { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.92rem; }
+  table.rules th, table.rules td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  table.rules th { background: #eef1f5; }
+  .blanks td, .blanks th { height: 34px; }
+  .line { border-bottom: 1px solid var(--ink); height: 24px; }
+  .small { font-size: 0.85rem; color: var(--muted); }
+  @media print {
+    body { background: #fff; }
+    .worksheet header, .worksheet footer { display: none; }
+    .box { border-color: #000; }
+    table.rules th, table.rules td { border-color: #000; }
+    .line { border-bottom-color: #000; }
+    .noprint { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header noprint">
+  <div class="wrapper">
+    <p class="kicker">Asdale Dynamics, LLC · Printable worksheet</p>
+    <h1>Batch Rename Safety Worksheet</h1>
+    <p class="subtitle">Print this page (Ctrl+P / Cmd+P) and fill it in before you rename anything.</p>
+    <a href="index.html" style="color:var(--accent); text-decoration:none;">← Read the full manual</a>
+  </div>
+</header>
+
+<div class="worksheet">
+  <h1>Batch Rename Safety Worksheet</h1>
+  <p class="subhead">Asdale Dynamics, LLC · Beginner-friendly guides · Test on copies, never originals</p>
+
+  <div class="box">
+    <h3>1 · Before you start (safety checklist)</h3>
+    <table class="rules blanks">
+      <tr><th>✔</th><td class="line">I copied the whole folder to a practice folder (e.g. on a USB stick)</td></tr>
+      <tr><th>✔</th><td class="line">I am renaming files in the <em>copy</em>, not the originals</td></tr>
+      <tr><th>✔</th><td class="line">All files I will rename are closed</td></tr>
+      <tr><th>✔</th><td class="line">I ran a preview / dry-run first</td></tr>
+      <tr><th>✔</th><td class="line">The preview shows exactly the changes I expect</td></tr>
+      <tr><th>✔</th><td class="line">I know how to undo (Ctrl+Z / Cmd+Z / undo log)</td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>2 · What I am renaming</h3>
+    <table class="rules blanks">
+      <tr><th>Folder (copy):</th><td class="line"></td></tr>
+      <tr><th>File type (e.g. .jpg, .pdf):</th><td class="line"></td></tr>
+      <tr><th>How many files:</th><td class="line"></td></tr>
+      <tr><th>Pattern I will use:</th><td class="line"></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>3 · Preview results (fill in before applying)</h3>
+    <table class="rules blanks">
+      <tr><th>Old name → New name</th><td class="line"></td></tr>
+      <tr><td class="line"></td></tr>
+      <tr><td class="line"></td></tr>
+      <tr><td class="line"></td></tr>
+      <tr><td class="line"></td></tr>
+      <tr><td class="line"></td></tr>
+    </table>
+    <p class="small">Did anything look wrong in the preview? Fix the pattern or prefix, then preview again.</p>
+  </div>
+
+  <div class="box">
+    <h3>4 · Undo log</h3>
+    <table class="rules blanks">
+      <tr><th>Undo log file name:</th><td class="line"></td></tr>
+      <tr><th>Where I saved it:</th><td class="line"></td></tr>
+      <tr><th>Undo command:</th><td class="line"><code>python3 scripts/rename.py --undo rename-undo-____.json --apply</code></td></tr>
+    </table>
+    <p class="small">If something goes wrong, run the undo command to restore every file exactly.</p>
+  </div>
+
+  <div class="box">
+    <h3>5 · Quick commands</h3>
+    <table class="rules blanks">
+      <tr><td class="line">Preview only:</td><td class="line"><code>python3 scripts/rename.py --path ___ --prefix ___</code></td></tr>
+      <tr><td class="line">Apply for real:</td><td class="line"><code>python3 scripts/rename.py --path ___ --prefix ___ --apply</code></td></tr>
+      <tr><td class="line">Add today's date:</td><td class="line"><code>python3 scripts/rename.py --path ___ --date-prefix --apply</code></td></tr>
+    </table>
+  </div>
+
+  <div class="box">
+    <h3>6 · After renaming</h3>
+    <ul>
+      <li>Did every file get the name I expected? ☐ Yes ☐ No</li>
+      <li>If no, did I run the undo command? ☐ Yes ☐ Not needed</li>
+      <li>Did I keep the undo log somewhere safe? ☐ Yes</li>
+    </ul>
+    <p class="small">Remember: rename one type of file at a time, and test on copies first.</p>
+  </div>
+
+  <footer class="site-footer" style="margin-top:30px;">
+    <div class="wrapper">
+      <p class="small">Published by <strong>Asdale Dynamics, LLC</strong> (Indiana, formed October 2026). MIT License. Copyright (c) 2026 Asdale Dynamics, LLC.</p>
+      <p class="small">Learn more: dylanasdale.github.io · No secrets or personal data stored in this project.</p>
+    </div>
+  </footer>
+</div>
+</body>
+</html>

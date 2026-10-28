@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safe Batch File Renaming — Beginner Manual</title>
+<meta name="description" content="A plain-English guide to renaming many files at once, safely, using built-in tools and a tiny script. Published by Asdale Dynamics, LLC.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrapper">
+    <p class="kicker">Asdale Dynamics, LLC &nbsp;·&nbsp; Beginner-friendly guides &nbsp;·&nbsp; Local-first &nbsp;·&nbsp; No secrets</p>
+    <h1>Safe Batch File Renaming</h1>
+    <p class="subtitle">A beginner manual for renaming lots of files at once — patterns, prefixes, dates, and undo precautions — using built-in tools and a tiny script.</p>
+    <p class="credit">Published by <strong>Asdale Dynamics, LLC</strong> (Indiana, formed October 2026). Written for Dylan Asdale, registered nurse turned AI author. His book <em>The Massive AI Manual</em> and hub site dylanasdale.github.io explain AI "like a friend would": plain English, step by step, never condescending.</p>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrapper">
+    <strong>In this guide:</strong>
+    <ul>
+      <li><a href="#safety">01 · Safety first</a></li>
+      <li><a href="#tools">02 · Built-in tools</a></li>
+      <li><a href="#patterns">03 · Patterns (wildcards &amp; regex)</a></li>
+      <li><a href="#prefixes">04 · Prefixes</a></li>
+      <li><a href="#dates">05 · Dates</a></li>
+      <li><a href="#undo">06 · Undo precautions</a></li>
+      <li><a href="#reference">07 · Quick reference</a></li>
+      <li><a href="worksheet.html">🖨️ Printable worksheet</a></li>
+      <li><a href="#script">📜 The rename script</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="wrapper">
+
+<section id="safety" class="card safety-callout">
+  <h2>01 · Safety first</h2>
+  <p><strong>Before you rename a single file, read this page.</strong> Batch renaming is fast — and mistakes are fast too. One wrong command can rename a hundred files in a second, and most tools have no built-in "undo."</p>
+  <div class="golden-rules">
+    <h3>The golden rules</h3>
+    <ol>
+      <li><strong>Test on copies, never originals.</strong> Copy your folder to a new folder (or a USB stick) and practice there first. Only rename the real files when the copy worked exactly as expected.</li>
+      <li><strong>Never move originals.</strong> The tools here rename files in place; they do not move them to another drive or delete them. You shouldn't either, while learning.</li>
+      <li><strong>Use preview (dry-run) mode first.</strong> Every tool shows what <em>would</em> happen without changing anything. Always preview first.</li>
+      <li><strong>Keep an undo log.</strong> A good batch rename writes down every old name and every new name so you can reverse it exactly, file by file.</li>
+      <li><strong>Rename one type of file at a time.</strong> It is easier to spot mistakes when all the files look alike.</li>
+      <li><strong>Close the files first.</strong> Close any open documents, photos, or spreadsheets before renaming them.</li>
+    </ol>
+  </div>
+  <table class="striped">
+    <thead><tr><th>Mistake</th><th>What happens</th><th>How to avoid it</th></tr></thead>
+    <tbody>
+      <tr><td>Renaming originals instead of copies</td><td>Original names are lost</td><td>Copy the folder first; practice on the copy</td></tr>
+      <tr><td>A pattern matches too many files</td><td>Files you meant to skip get renamed</td><td>Preview first; narrow the pattern</td></tr>
+      <tr><td>A typo in the replacement text</td><td>All files get the same typo</td><td>Preview first; check the list carefully</td></tr>
+      <tr><td>No undo log kept</td><td>You cannot reverse the rename</td><td>Use tools that write an undo log</td></tr>
+      <tr><td>Renaming open files</td><td>Errors or confused programs</td><td>Close all files before renaming</td></tr>
+    </tbody>
+  </table>
+  <p class="reminder"><strong>Remember:</strong> there is no shame in testing on copies. The people who lose files are the people who skip this step.</p>
+</section>
+
+<section id="tools" class="card">
+  <h2>02 · Built-in tools</h2>
+  <p>You do not need to install anything to start batch renaming. Every computer comes with tools that can do it.</p>
+
+  <h3>Windows — File Explorer (easiest, safest for beginners)</h3>
+  <ol>
+    <li>Open the folder with your files.</li>
+    <li>Select the files: <code>Ctrl+A</code> for all, or hold <code>Ctrl</code> and click to pick several. Click the first, hold <code>Shift</code>, click the last to select a range.</li>
+    <li>Right-click and choose <strong>Rename</strong> (or press <code>F2</code>).</li>
+    <li>Type the new name and press <code>Enter</code>.</li>
+  </ol>
+  <p>Windows renames the first file to exactly what you typed, and numbers the rest: <code>vacation.jpg</code>, <code>vacation (1).jpg</code>, <code>vacation (2).jpg</code>…</p>
+  <p><strong>Undo:</strong> press <code>Ctrl+Z</code> right after renaming. This only works for renames done inside File Explorer, and only immediately after.</p>
+
+  <h3>Windows — PowerShell (more control)</h3>
+  <pre><code># Preview only — shows what would happen, changes nothing
+Get-ChildItem *.jpg | ForEach-Object { $_.Name, $_.BaseName + "-copy" + $_.Extension }
+
+# Apply — add a prefix to every .jpg file
+Get-ChildItem *.jpg | Rename-Item -NewName { "trip-" + $_.BaseName + $_.Extension }</code></pre>
+  <p><strong>Safety tip:</strong> run the preview version first. When the list looks right, run the rename command. PowerShell does not keep an undo log by default.</p>
+
+  <h3>macOS — Finder</h3>
+  <ol>
+    <li>Open the folder in Finder.</li>
+    <li>Select the files (<code>Cmd+A</code> for all, or hold <code>Cmd</code> and click).</li>
+    <li>Right-click (or <code>Ctrl</code>+click) and choose <strong>Rename X Items</strong>.</li>
+    <li>Choose <strong>Replace Text</strong>, <strong>Add Text</strong> (before or after the name), or <strong>Format</strong> (same name with numbers).</li>
+    <li>Click <strong>Rename</strong>.</li>
+  </ol>
+  <p><strong>Undo:</strong> press <code>Cmd+Z</code> immediately after renaming (Finder only).</p>
+
+  <h3>macOS / Linux — Terminal (<code>mv</code>)</h3>
+  <pre><code># Rename one file
+mv "old-name.jpg" "new-name.jpg"
+
+# Preview first: echo shows what would happen
+for f in *.jpg; do echo "mv \"$f\" \"trip-$f\""; done
+
+# Then apply (remove the echo when the preview looks right)
+for f in *.jpg; do mv "$f" "trip-$f"; done</code></pre>
+  <p>Always put file names in quotes (<code>"$f"</code>) so names with spaces do not break the command. The Terminal has no undo — test on copies.</p>
+
+  <div class="choice-guide">
+    <h3>Quick choice guide</h3>
+    <table class="striped">
+      <thead><tr><th>Job</th><th>Best tool</th></tr></thead>
+      <tbody>
+        <tr><td>Rename 5–20 files by hand</td><td>File Explorer / Finder</td></tr>
+        <tr><td>Add same prefix to many files</td><td>File Explorer / Finder / PowerShell</td></tr>
+        <tr><td>Replace one word in many names</td><td>PowerShell / Finder / Terminal loop</td></tr>
+        <tr><td>Add today's date to every name</td><td><code>scripts/rename.py</code></td></tr>
+        <tr><td>Complex pattern (only certain files)</td><td><code>scripts/rename.py</code></td></tr>
+        <tr><td>Want an automatic undo log</td><td><code>scripts/rename.py</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="patterns" class="card">
+  <h2>03 · Patterns</h2>
+  <p>A <strong>pattern</strong> tells the computer "only rename files that look like this." Patterns keep you from accidentally renaming files you meant to leave alone.</p>
+
+  <h3>Wildcards (built into every operating system)</h3>
+  <table class="striped">
+    <thead><tr><th>Wildcard</th><th>Meaning</th><th>Example matches</th></tr></thead>
+    <tbody>
+      <tr><td><code>*</code></td><td>Any text, any length</td><td><code>*.jpg</code> matches every .jpg file</td></tr>
+      <tr><td><code>?</code></td><td>Exactly one character</td><td><code>photo?.jpg</code> matches <code>photo1.jpg</code>, not <code>photo12.jpg</code></td></tr>
+      <tr><td><code>[abc]</code></td><td>One of those letters</td><td><code>file[12].txt</code> matches <code>file1.txt</code> and <code>file2.txt</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Regular expressions (regex)</h3>
+  <p>Regular expressions match patterns like "exactly three digits." They look scary but are built from a few simple pieces.</p>
+  <table class="striped">
+    <thead><tr><th>Piece</th><th>Meaning</th><th>Example</th></tr></thead>
+    <tbody>
+      <tr><td><code>.</code></td><td>Any single character</td><td><code>a.c</code> matches <code>abc</code>, <code>a2c</code></td></tr>
+      <tr><td><code>*</code></td><td>Zero or more of the thing before it</td><td><code>ab*</code> matches <code>a</code>, <code>ab</code>, <code>abb</code></td></tr>
+      <tr><td><code>+</code></td><td>One or more of the thing before it</td><td><code>ab+</code> matches <code>ab</code>, <code>abb</code>, not <code>a</code></td></tr>
+      <tr><td><code>?</code></td><td>Zero or one of the thing before it</td><td><code>colou?r</code> matches <code>color</code> and <code>colour</code></td></tr>
+      <tr><td><code>\d</code></td><td>Any digit (0–9)</td><td><code>\d\d\d</code> matches <code>123</code>, <code>007</code></td></tr>
+      <tr><td><code>^</code></td><td>Start of the text</td><td><code>^IMG</code> matches names starting with <code>IMG</code></td></tr>
+      <tr><td><code>$</code></td><td>End of the text</td><td><code>\.jpg$</code> matches names ending in <code>.jpg</code></td></tr>
+      <tr><td><code>(…)</code></td><td>A group you can reuse</td><td><code>(\d{4})-(\d{2})-(\d{2})</code></td></tr>
+    </tbody>
+  </table>
+  <p class="note">The backslash before the dot matters: <code>\.</code> means a literal dot. <code>.</code> alone means "any character."</p>
+
+  <h3>Pattern playground — test before you rename</h3>
+  <table class="striped">
+    <thead><tr><th>I want to match</th><th>Try this pattern</th></tr></thead>
+    <tbody>
+      <tr><td>All PDFs</td><td><code>\.pdf$</code> or <code>*.pdf</code></td></tr>
+      <tr><td>Files starting with <code>scan</code></td><td><code>^scan</code> or <code>scan*</code></td></tr>
+      <tr><td><code>IMG_</code> followed by 4 digits</td><td><code>^IMG_\d{4}</code></td></tr>
+      <tr><td>Names containing <code>draft</code></td><td><code>draft</code></td></tr>
+      <tr><td>Exactly 3 digits anywhere</td><td><code>\d{3}</code></td></tr>
+      <tr><td>Names ending in <code>.jpg</code> or <code>.jpeg</code></td><td><code>\.jpe?g$</code></td></tr>
+    </tbody>
+  </table>
+  <div class="reminder"><strong>List first, rename second.</strong> Show the list of matching files before changing anything. Start narrow — match too few files rather than too many.</div>
+</section>
+
+<section id="prefixes" class="card">
+  <h2>04 · Prefixes</h2>
+  <p>A <strong>prefix</strong> is text added to the <em>front</em> of a file name:</p>
+  <pre><code>invoice-2026-10.pdf
+2026-10-invoice-2026-10.pdf
+          ↑ prefix added</code></pre>
+  <p>Prefixes are useful for grouping files, sorting them together, or marking their status (<code>draft-</code>, <code>final-</code>, <code>archive-</code>).</p>
+
+  <h3>Built-in tools</h3>
+  <ul>
+    <li><strong>File Explorer / Finder:</strong> select the files, rename the first one with your prefix (e.g. <code>trip-1.jpg</code>), and the OS numbers the rest.</li>
+    <li><strong>PowerShell:</strong> <code>Get-ChildItem *.jpg \| Rename-Item -NewName { "trip-" + $_.BaseName + $_.Extension }</code></li>
+    <li><strong>macOS Finder:</strong> Rename Items → Add Text → "Before name" → type your prefix → Rename.</li>
+    <li><strong>Terminal:</strong> <code>for f in *.jpg; do mv "$f" "trip-$f"; done</code></li>
+  </ul>
+
+  <h3>With <code>scripts/rename.py</code></h3>
+  <pre><code># Add a prefix
+python3 scripts/rename.py --path ./my-copies --prefix trip- --apply
+# photo.jpg → trip-photo.jpg
+
+# Only .pdf files get the prefix
+python3 scripts/rename.py --path ./my-copies --pattern '\.pdf$' --prefix invoice- --apply</code></pre>
+  <div class="reminder"><strong>Preview first.</strong> Combine <code>--prefix</code> with <code>--pattern</code> so only matching files get the prefix. Keep the undo log — if <code>receipt-</code> was the wrong word, you can reverse every rename in one step.</div>
+</section>
+
+<section id="dates" class="card">
+  <h2>05 · Dates</h2>
+  <p>Adding dates to file names is one of the best ways to keep files sortable. A file named <code>2026-10-28 receipt.pdf</code> sorts neatly next to <code>2026-10-29 receipt.pdf</code> in every file browser.</p>
+
+  <div class="date-box">
+    <strong>Use the ISO date format: YYYY-MM-DD</strong>
+    <p>Always write dates as <strong>four-digit year, two-digit month, two-digit day</strong>, for example <code>2026-10-28</code>.</p>
+    <p><strong>Why:</strong> names starting with <code>2026-10-28</code> sort in chronological order everywhere. Formats like <code>10-28-2026</code> do not sort correctly. Avoid slashes (<code>2026/10/28</code>) — some operating systems do not allow <code>/</code> in file names.</p>
+  </div>
+
+  <h3>Add today's date</h3>
+  <p>Built-in tools usually cannot insert <em>today's</em> date automatically — you type it yourself.</p>
+  <pre><code># PowerShell
+$date = Get-Date -Format "yyyy-MM-dd"
+Get-ChildItem *.jpg | Rename-Item -NewName { "$date-" + $_.BaseName + $_.Extension }
+
+# macOS / Linux Terminal
+today=$(date +%F)   # gives 2026-10-28
+for f in *.jpg; do mv "$f" "${today}-$f"; done</code></pre>
+
+  <h3>With <code>scripts/rename.py</code></h3>
+  <pre><code># Add today's date to every file
+python3 scripts/rename.py --path ./my-copies --date-prefix --apply
+# photo.jpg → 2026-10-28-photo.jpg
+
+# Only PDFs
+python3 scripts/rename.py --path ./my-copies --pattern '\.pdf$' --date-prefix --apply</code></pre>
+  <div class="reminder"><strong>One date per run.</strong> All files renamed in a single <code>--date-prefix</code> pass get today's date. Date-stamp copies first.</div>
+</section>
+
+<section id="undo" class="card safety-callout">
+  <h2>06 · Undo precautions</h2>
+  <p>Undo is the most important part of batch renaming. Every tool has limits on what it can reverse. Know them before you start.</p>
+  <table class="striped">
+    <thead><tr><th>Tool</th><th>Undo method</th><th>Limits</th></tr></thead>
+    <tbody>
+      <tr><td>Windows File Explorer</td><td><code>Ctrl+Z</code> immediately after</td><td>File Explorer renames only; most recent action</td></tr>
+      <tr><td>macOS Finder</td><td><code>Cmd+Z</code> immediately after</td><td>Finder renames only; most recent action</td></tr>
+      <tr><td>PowerShell <code>Rename-Item</code></td><td>No built-in undo</td><td>Reverse each rename by hand</td></tr>
+      <tr><td>Terminal <code>mv</code></td><td>No built-in undo</td><td>Reverse each rename by hand</td></tr>
+      <tr><td><code>scripts/rename.py</code></td><td>Undo log written by the script</td><td>Reverses exactly what that run did</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dry-run mode — always run it first</h3>
+  <p><code>scripts/rename.py</code> does nothing unless you pass <code>--apply</code>. Without it, the script only prints what it would do:</p>
+  <pre><code>python3 scripts/rename.py --path ./my-copies --prefix trip-
+# DRY RUN — no files were changed
+# photo.jpg   →   trip-photo.jpg</code></pre>
+  <p>Look the list over. Does every arrow look right? Did any file you wanted to skip appear? Only when the preview looks perfect do you add <code>--apply</code>.</p>
+
+  <h3>The undo log</h3>
+  <p>Every <code>--apply</code> run writes an undo log like <code>rename-undo-20261028-143022.json</code>. To reverse that run:</p>
+  <pre><code>python3 scripts/rename.py --undo rename-undo-20261028-143022.json --apply</code></pre>
+  <p>The script renames every <code>to</code> name back to its <code>from</code> name, in reverse order, and checks each file still has the expected name first.</p>
+
+  <div class="reminder"><strong>Before you apply any batch rename:</strong></div>
+  <ul class="checklist">
+    <li>I am working on a <strong>copy</strong> of my files</li>
+    <li>I ran a <strong>preview / dry-run</strong> first</li>
+    <li>The preview shows exactly the changes I expect</li>
+    <li>All files to be renamed are <strong>closed</strong></li>
+    <li>I know how to undo: <code>Ctrl+Z</code>, <code>Cmd+Z</code>, by hand, or <code>scripts/rename.py --undo</code></li>
+    <li>I saved the undo log somewhere I can find it</li>
+  </ul>
+  <p class="reminder"><strong>If you cannot answer "yes" to every item, stop and copy your folder first.</strong></p>
+</section>
+
+<section id="reference" class="card">
+  <h2>07 · Quick reference</h2>
+  <p>Tape this page to your monitor.</p>
+  <div class="reminder"><strong>Before you start:</strong> copy the folder → close all files → preview → apply only when the preview looks right → keep the undo log.</div>
+
+  <h3><code>scripts/rename.py</code></h3>
+  <pre><code># Preview (changes nothing)
+python3 scripts/rename.py --path ./folder --prefix trip-
+
+# Apply
+python3 scripts/rename.py --path ./folder --prefix trip- --apply
+
+# Add today's date (YYYY-MM-DD)
+python3 scripts/rename.py --path ./folder --date-prefix --apply
+
+# Only files matching a pattern
+python3 scripts/rename.py --path ./folder --pattern '\.pdf$' --prefix invoice- --apply
+
+# Undo a previous run
+python3 scripts/rename.py --undo rename-undo-*.json --apply</code></pre>
+
+  <h3>Regex cheat sheet</h3>
+  <table class="striped">
+    <thead><tr><th>Pattern</th><th>Matches</th></tr></thead>
+    <tbody>
+      <tr><td><code>*.jpg</code></td><td>All JPEG files (wildcard)</td></tr>
+      <tr><td><code>\.pdf$</code></td><td>Names ending in .pdf</td></tr>
+      <tr><td><code>^IMG_\d{4}</code></td><td>Names starting with IMG_ + 4 digits</td></tr>
+      <tr><td><code>\d{3}</code></td><td>Exactly 3 digits</td></tr>
+      <tr><td><code>\.jpe?g$</code></td><td>.jpg or .jpeg</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Date format</h3>
+  <p>Always use <code>YYYY-MM-DD</code> (for example <code>2026-10-28</code>) so files sort in order.</p>
+
+  <h3>Emergency</h3>
+  <ul>
+    <li>Renamed the wrong files on a <strong>copy</strong>? Delete the copy and try again.</li>
+    <li>Renamed originals and have an <strong>undo log</strong>? Run <code>scripts/rename.py --undo &lt;log-file&gt; --apply</code>.</li>
+    <li>Renamed originals, no log, File Explorer/Finder? Press <code>Ctrl+Z</code> / <code>Cmd+Z</code> right away.</li>
+    <li>Otherwise: rename each file back by hand. That is why we test on copies.</li>
+  </ul>
+</section>
+
+<section id="script" class="card">
+  <h2>📜 The rename script</h2>
+  <p><code>scripts/rename.py</code> is a tiny, beginner-friendly Python batch renamer. It runs in <strong>preview mode by default</strong> and writes an <strong>undo log</strong> for every change. It works on Windows, Mac, and Linux.</p>
+  <p>See <code>scripts/README.md</code> for full usage and examples.</p>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrapper">
+    <p><strong>License:</strong> MIT License. Copyright (c) 2026 Asdale Dynamics, LLC. See <code>LICENSE</code>.</p>
+    <p><strong>Credit:</strong> Created by <strong>Asdale Dynamics, LLC</strong> (Indiana, formed October 2026). Learn more at dylanasdale.github.io</p>
+    <p class="small">No secrets, API keys, or personal data are stored in this project. Works offline — local-first.</p>
+  </div>
+</footer>
+
+</body>
+</html>
